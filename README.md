@@ -1,198 +1,280 @@
-# components-seed
+# seed-components
 
-Librería de componentes React (variantes por _constelación_) para portafolios y
-landing pages. Componentes modulares, estilizados con **CSS variables**
-(`var(--...)`), listos para consumir desde otros proyectos y para publicar en
-npm.
+Biblioteca de componentes React construida con TypeScript y CSS Modules.
 
----
+`seed-components` proporciona componentes reutilizables organizados por familias visuales (constellations), permitiendo mantener la misma funcionalidad con diferentes estilos visuales.
 
-## Qué hace
-
-- Exporta componentes listos (`HeroSectionAndromeda`, `ContactFormAndromeda`,
-  `ScrollSnapAndromeda`, `WorkSectionAndromeda`, etc.).
-- Estilos por componente; uso intensivo de `var(--...)` para tematización.
-- Incluye carpeta `bundle/` con los builds compilados (`index.css`,
-  `index.es.js`, `index.umd.js`).
-- Script TypeScript `scripts/update-css-vars.ts` que inserta en cada `.css` un
-  comentario inicial con las variables `--xxx` usadas (documentación
-  automática).
+Diseñada para aplicaciones web, sistemas administrativos, landing pages, portafolios, agendas, formularios y paneles de gestión.
 
 ---
 
-## Instalación
+## características
 
-### Desde npm (consumidor)
+- Componentes React escritos en TypeScript.
+- Arquitectura basada en constellations (`Andromeda`, `Antlia`, etc.).
+- CSS Modules para aislamiento de estilos.
+- Personalización mediante CSS Variables.
+- Compatible con React + Vite.
+- Distribución optimizada para npm.
+- Storybook para documentación visual.
+- Sistema de traducciones integrado en múltiples componentes.
+- Componentes desacoplados y reutilizables.
 
+---
+
+## instalación
+
+```bash
+npm install seed-components
 ```
-npm install components-seed
-```
 
-### En desarrollo (usar el paquete local)
+o
 
-```
-# en la librería
-npm install
-npm link
-npm run bundle:watch             # mantiene a la escucha para generar /bundle
-# en el proyecto consumidor
-npm link components-seed
+```bash
+yarn add seed-components
 ```
 
 ---
 
-## Ejemplo de uso
+## uso básico
 
-Importa los estilos de la librería en el main.tsx
+Importa cualquier componente:
 
-```react
-import 'components-seed/bundle/index.css'
+```tsx
+import { AlertAndromeda } from 'seed-components'
+
+export default function App() {
+  return (
+    <AlertAndromeda
+      title="Operación exitosa"
+      message="Los datos fueron guardados correctamente"
+      type="success"
+    />
+  )
+}
 ```
-
-Importa un componente desde la librería
-
-```react
-import { ExampleComponent } from 'components-seed'
-
-export const Home = () => (
-  <ExampleComponent someProp="value" />
-)
-```
-
-**Recuerda:** las variables CSS globales (`:root { --base-color-7: ... }`) deben
-definirse en el proyecto para que los colores concuerden.
 
 ---
 
-## Estructura del proyecto
+## componentes disponibles
 
-```sh
+### alert
+
+- AlertAndromeda
+
+### appointment form
+
+- AppointmentFormAndromeda
+
+### calendar
+
+- CalendarAndromeda
+- CalendarAntlia
+
+### contact form
+
+- ContactFormAndromeda
+- ContactFormAntlia
+
+### file downloader
+
+- FileDownloaderAndromeda
+
+### y más...
+
+La librería continúa creciendo mediante nuevas constellations y componentes reutilizables.
+
+---
+
+## filosofía de las constellations
+
+Cada componente puede existir en múltiples variantes visuales.
+
+Ejemplo:
+
+```tsx
+import {
+  ContactFormAndromeda,
+  ContactFormAntlia,
+} from 'seed-components'
+```
+
+Ambos componentes resuelven el mismo problema, pero presentan interfaces y experiencias visuales distintas.
+
+Esto permite mantener consistencia funcional mientras se adapta el diseño a diferentes proyectos.
+
+---
+
+## personalización mediante css variables
+
+Los componentes utilizan variables CSS para facilitar la tematización.
+
+Ejemplo:
+
+```css
+:root {
+  --calendar-primary: #2563eb;
+  --calendar-text: #111827;
+  --calendar-bg: #ffffff;
+}
+```
+
+Posteriormente los componentes consumirán estas variables automáticamente.
+
+---
+
+## estructura del proyecto
+
+```text
 .
 ├── bundle
 │   ├── index.css
 │   ├── index.es.js
 │   └── index.umd.js
+│
 ├── src
 │   ├── components
-│   │   ├── ContactForm(Type-Component)
-│   │   │   └── Andromeda(Constelation-Name)
-│   │   │       ├── index.tsx
-│   │   │       └── styles.module.css
+│   │   ├── Alert
+│   │   │   └── Andromeda
+│   │   │
+│   │   ├── AppointmentForm
+│   │   │   └── Andromeda
+│   │   │
+│   │   ├── Calendar
+│   │   │   ├── Andromeda
+│   │   │   └── Antlia
+│   │   │
+│   │   ├── ContactForm
+│   │   │   ├── Andromeda
+│   │   │   └── Antlia
+│   │   │
+│   │   └── ...
+│   │
+│   ├── types
+│   ├── utils
 │   └── index.ts
-├── scripts
-│   ├── generate-components-index.ts
-│   ├── generate-types-index.ts
-│   ├── generate-utils-index.ts
-│   └── update-css-vars.ts
+│
+├── .storybook
 ├── package.json
-├── .prettierrc
-└── eslint.config.js
+├── vite.config.ts
+├── tsconfig.json
+└── README.md
 ```
 
 ---
 
-## Scripts (`package.json`)
+## desarrollo local
 
-```json
-{
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .ts,.tsx --fix",
-    "lint:fix": "eslint . --fix",
-    "lint:css": "stylelint \"**/*.css\" --fix",
-    "format": "prettier --write .",
-    "generate:types": "ts-node ./src/scripts/generate-types-index.ts",
-    "generate:utils": "ts-node ./src/scripts/generate-utils-index.ts",
-    "generate:components": "ts-node ./src/scripts/generate-components-index.ts",
-    "comment-css-variables": "ts-node ./src/scripts/comment-css-variables.ts",
-    "generate-indexes": "ts-node ./src/scripts",
-    "bundle": "npm run generate-indexes && tsc -b && vite build",
-    "bundle:watch": "vite build --watch"
-  }
-}
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Ejecutar entorno de desarrollo:
+
+```bash
+npm run dev
+```
+
+Ejecutar Storybook:
+
+```bash
+npm run storybook
+```
+
+Construir librería:
+
+```bash
+npm run build
+```
+
+Generar bundle para publicación:
+
+```bash
+npm run bundle
 ```
 
 ---
 
-## Publicar en npm
+## publicación en npm
 
-1. Ejecuta localmente:
+Verifica el paquete:
 
-```sh
+```bash
 npm run lint
 npm run format
 npm run bundle
 ```
 
-2. Bump de versión:
+Actualizar versión:
 
-```
+```bash
 npm version patch
 ```
 
-3. Login (si es necesario):
+o
 
-```
-npm login
+```bash
+npm version minor
 ```
 
-4. Publicar:
+o
 
+```bash
+npm version major
 ```
+
+Publicar:
+
+```bash
 npm publish --access public
 ```
 
-5. En proyecto consumidor:
+---
 
+## buenas prácticas
+
+Antes de publicar:
+
+```bash
+npm run lint
+npm run format
+npm run build
+npm run bundle
 ```
-npm install components-seed@X.Y.Z
+
+Verifica:
+
+- Exportaciones del paquete.
+- Tipos TypeScript generados.
+- Bundle final.
+- Storybook.
+- Variables CSS documentadas.
+- Compatibilidad en un proyecto externo.
+
+Prueba local:
+
+```bash
+npm pack
 ```
+
+Luego instala el `.tgz` generado en un proyecto consumidor.
 
 ---
 
-## VS Code — configuración recomendada (pegar en `.vscode/` del workspace consumidor)
+## stack tecnológico
 
-### `.vscode/settings.json`
-
-```json
-{
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always",
-    "source.organizeImports": "always",
-    "source.removeUnusedImports": "always",
-    "source.sortImports": "always"
-  }
-}
-```
-
-**Notas VS Code**
-
-- `prettier.configPath` apunta al `.prettierrc` dentro del paquete
-  `components-seed` instalado. Esto unifica formato entre librería y consumidor.
-- Si usas path-aliases en `tsconfig.json`, añade
-  `eslint-import-resolver-typescript` para que ESLint resuelva importaciones.
+- React
+- TypeScript
+- Vite
+- Storybook
+- CSS Modules
+- ESLint
+- Prettier
 
 ---
 
-## Buenas prácticas antes de publicar
+## licencia
 
-1. `npm run lint && npm run format && npm run build && npm run comment-css-variables`.
-2. Verifica `bundle/index.css` y builds (`index.es.js`, `index.umd.js`).
-3. Prueba localmente instalando el paquete desde la ruta:
-   `npm install /ruta/a/components-seed` y ejecuta el proyecto consumidor.
-4. Mantén `prepublishOnly` para no olvidar pasos.
-
----
-
-## Cómo añadir una nueva constelación (rápido)
-
-1. Copia la carpeta base del componente (p. ej.
-   `src/components/HeroSection/Andromeda`) → renombra `Antlia`.
-2. Ajusta `index.tsx` y el `.css` correspondiente.
-3. Ejecuta `npm run comment-css-variables`.
-4. Ejecuta `npm run bundle`.
-5. Bump version y publicar.
+MIT
